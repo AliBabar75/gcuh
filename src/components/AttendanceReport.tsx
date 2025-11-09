@@ -9,12 +9,12 @@ interface AttendanceRecord {
   date: string;
   status: string;
   created_at: string;
-  students?: {
+  students?: { // array fix
     fullname: string;
     rollno: string;
     program: string;
     batch: string | null;
-  };
+  }[];
 }
 
 export default function AttendanceReport() {
@@ -23,34 +23,34 @@ export default function AttendanceReport() {
   const [loading, setLoading] = useState(false);
 
   // ✅ Fetch Attendance Records with student info
-const fetchRecords = async () => {
-  setLoading(true);
+  const fetchRecords = async () => {
+    setLoading(true);
 
-  const { data, error } = await supabase
-    .from("attendance")
-    .select(`
-      id,
-      student_id,
-      date,
-      status,
-      created_at,
-      students (
-        fullname,
-        rollno,
-        program,
-        batch
-      )
-    `)
-    .order("date", { ascending: false }); // Optional: latest first
+    const { data, error } = await supabase
+      .from("attendance")
+      .select(`
+        id,
+        student_id,
+        date,
+        status,
+        created_at,
+        students (
+          fullname,
+          rollno,
+          program,
+          batch
+        )
+      `)
+      .order("date", { ascending: false });
 
-  if (error) {
-    alert("Error loading report!");
-  } else {
-    setRecords(data || []);
-  }
-  setLoading(false);
-};
-
+    if (error) {
+      alert("Error loading report!");
+      console.error(error);
+    } else {
+      setRecords(data || []);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
     fetchRecords();
@@ -62,10 +62,10 @@ const fetchRecords = async () => {
       ["Date", "Roll No", "Full Name", "Program", "Batch", "Status"],
       ...records.map((r) => [
         r.date,
-        r.students?.rollno || "",
-        r.students?.fullname || "",
-        r.students?.program || "",
-        r.students?.batch || "",
+        r.students?.[0]?.rollno || "",
+        r.students?.[0]?.fullname || "",
+        r.students?.[0]?.program || "",
+        r.students?.[0]?.batch || "",
         r.status,
       ]),
     ];
@@ -80,8 +80,8 @@ const fetchRecords = async () => {
 
   // ✅ Filtered Records
   const filtered = records.filter((r) =>
-    r.students?.fullname?.toLowerCase().includes(search.toLowerCase()) ||
-    r.students?.rollno?.toLowerCase().includes(search.toLowerCase())
+    r.students?.[0]?.fullname?.toLowerCase().includes(search.toLowerCase()) ||
+    r.students?.[0]?.rollno?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -136,10 +136,10 @@ const fetchRecords = async () => {
               filtered.map((r) => (
                 <tr key={r.id}>
                   <td className="p-3 border">{r.date}</td>
-                  <td className="p-3 border">{r.students?.rollno}</td>
-                  <td className="p-3 border">{r.students?.fullname}</td>
-                  <td className="p-3 border">{r.students?.program}</td>
-                  <td className="p-3 border">{r.students?.batch || "N/A"}</td>
+                  <td className="p-3 border">{r.students?.[0]?.rollno}</td>
+                  <td className="p-3 border">{r.students?.[0]?.fullname}</td>
+                  <td className="p-3 border">{r.students?.[0]?.program}</td>
+                  <td className="p-3 border">{r.students?.[0]?.batch || "N/A"}</td>
                   <td className="p-3 border">{r.status}</td>
                 </tr>
               ))

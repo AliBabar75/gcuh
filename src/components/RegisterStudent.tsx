@@ -56,7 +56,7 @@ export default function RegisterStudent() {
 
     const rollNo = generateRollNo();
 
-    const { data, error } = await supabase.from("students").insert([
+    const {  error } = await supabase.from("students").insert([
       {
         fullname: form.fullName,
         guardian: form.guardian,

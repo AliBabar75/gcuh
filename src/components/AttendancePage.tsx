@@ -97,7 +97,7 @@ export default function AttendancePage() {
       if (isEditMode) {
         // Update existing attendance
         for (const record of records) {
-          const { error } = await supabase
+          const {  } = await supabase
             .from("attendance")
             .update({ status: record.status })
             .eq("student_id", record.student_id)

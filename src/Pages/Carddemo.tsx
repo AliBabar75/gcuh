@@ -20,7 +20,7 @@ export function CardDemo() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // 👈 new state
-  const [message, setMessage] = useState("");
+  const [, setMessage] = useState("");
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
